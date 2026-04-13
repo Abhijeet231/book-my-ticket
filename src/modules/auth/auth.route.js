@@ -10,18 +10,15 @@ import { authenticate } from "./auth.middleware.js";
 const router = Router();
 
 // Register route
-router.post('/register',validate(RegisterDto), authController.registerUser);
+router.post("/register", validate(RegisterDto), authController.registerUser);
 
 // Login route
-router.post('/login', validate(LoginDto), authController.loginUser);
+router.post("/login", validate(LoginDto), authController.loginUser);
 
-// Logout route
- 
+// Refresh token route
+router.post("/refresh", authController.refresh);
 
-
-
-
-
-
+// Logout
+router.post("/logout", authenticate, authController.logout);
 
 export default router;

@@ -27,11 +27,10 @@ export const registerUserService = async (data) => {
   // Insert into DB
   const result = await pool.query(
     `INSERT INTO users (fullname, email, password)
-         VALUES ($1, $2, $3)
-         RETURNING id, fullname, email,
-         `[(fullname, email, hashedPassword)],
+   VALUES ($1, $2, $3)
+   RETURNING id, fullname, email`,
+    [fullname, email, hashedPassword],
   );
-
   return result.rows[0];
 };
 
@@ -91,25 +90,28 @@ export const refreshService = async (token) => {
   const decoded = verifyRefreshTokne(token);
 
   const result = await pool.query(
-    "SELECT * FROM users WHERE refreshtoken = $1",
-    [decoded],
+    "SELECT * FROM users WHERE id = $1 AND refreshtoken = $2",
+    [decoded.id, token],
   );
 
   const user = result.rows[0];
   if (!user) {
-    throw new Error("Invalid token");
+    throw new Error("Invalid Refresh token");
   }
 
-  const accessToken = generateAccessToken({id: user.id, email: user.email});
+  const accessToken = generateAccessToken({ id: user.id, email: user.email });
 
- return {accessToken}
-
+  return { accessToken };
 };
 
-
 // Logout service
-const logout = async (userId) => {
-    const user = await pool.query(
-        "SELECT * FROM users"
-    )
-}
+export const logout = async (userId) => {
+  const result = await pool.query(
+    "UPDATE users SET refreshtoken = NULL where id = $1 RETURNING *",
+    [userId],
+  );
+
+  if (result.rowCount === 0) {
+    throw ApiError.unauthorised("User not found!");
+  }
+};
