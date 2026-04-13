@@ -1,11 +1,12 @@
-
+import "dotenv/config"
 
 import express from "express";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 import { pool } from "./src/common/config/db.js";
-
+import authRoutes from "./src/modules/auth/auth.route.js"
+import cookieParser from "cookie-parser";
 
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -14,8 +15,12 @@ const port = process.env.PORT || 8080;
 
 
 
-const app = new express();
+const app =  express();
+
 app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
@@ -65,5 +70,9 @@ app.put("/:id/:name", async (req, res) => {
     res.send(500);
   }
 });
+
+
+// auth routes
+app.use('/api/auth', authRoutes);
 
 app.listen(port, () => console.log("Server starting on port: " + port));
