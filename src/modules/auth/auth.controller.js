@@ -14,3 +14,20 @@ export const registerUser = async(req, res) => {
         })
     }
 }
+
+// LOGIN CONTROLLER
+export const loginUser = async (req,res) => {
+    try {
+        const {user, accessToken, refreshtoken} = await authService.loginUserService(req.body);
+
+        // Send Refresh token in cookie
+        res.cookie("refreshToken", refreshtoken , cookieOptions);
+
+        ApiResponse.ok(res, "LoggedIn successfully", {user, accessToken, refreshtoken})
+
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        })
+    }
+}
