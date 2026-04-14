@@ -56,6 +56,7 @@ export const loginUserService = async (data) => {
     throw new Error("Invalid email or password");
   }
 
+  console.log("Generating token at:", new Date());
   // Generate tokens
   const accessToken = generateAccessToken({
     id: user.id,
@@ -68,7 +69,7 @@ export const loginUserService = async (data) => {
   });
 
   // saving refreshtoken
-  await pool.query("UPDATE users SET refreshToken = $1 WHERE id = $2", [
+  await pool.query("UPDATE users SET refreshtoken = $1 WHERE id = $2", [
     refreshtoken,
     user.id,
   ]);

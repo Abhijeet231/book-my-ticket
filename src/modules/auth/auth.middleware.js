@@ -17,6 +17,8 @@ const authenticate = async (req, res, next) => {
     // verify token
     const decoded = verifyAccessToken(token);
     console.log("DECODED:", decoded);
+    console.log("Token expires at:", new Date(decoded.exp * 1000));
+    console.log("Current time:", new Date());
 
     // Get users from DB
     const result = await pool.query(

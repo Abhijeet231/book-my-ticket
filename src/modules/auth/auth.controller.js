@@ -61,10 +61,14 @@ export const refresh = async (req, res) => {
 
 // LOGOUT CONTROLLER
 export const logout = async (req, res) => {
-  await authService.logout(req.user.id);
-
-  // Clear cookies
-  res.clearCookie("refreshtoken", cookieOptions);
-
-  ApiResponse.ok(res, "Logout Success.");
+ try {
+   await authService.logout(req.user.id);
+ 
+   // Clear cookies
+   res.clearCookie("refreshtoken", cookieOptions);
+ 
+   ApiResponse.ok(res, "Logout Success.");
+ } catch (error) {
+  console.log("Error while logging user out!", error)
+ }
 };

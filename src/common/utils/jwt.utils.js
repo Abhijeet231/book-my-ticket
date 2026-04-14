@@ -2,8 +2,9 @@ import jwt from "jsonwebtoken";
 
 // GENERATE AN ACCESSTOKEN
 const generateAccessToken = (payload) => {
+    if (!process.env.JWT_ACCESS_SECRET) throw new Error("JWT_ACCESS_SECRET is not set!");
     return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || "1d"
+        expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || "15m"
     });
 }
 
